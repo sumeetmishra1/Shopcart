@@ -2,11 +2,8 @@ const path = require('path');
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-//const Cart=require('./models/cart');
-//const CartItem=require('./models/cart-item');
-//const errorController = require('./controllers/error');
-const mongoConnect = require('./util/database').mongoConnect;
-//const Product =require('./models/product')
+
+const errorController = require('./controllers/error');
 const User=require('./models/user')
 const app = express();
 
@@ -17,14 +14,14 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 
-
+const mongoose = require('mongoose');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next)=>{
-    User.findById('65a3cb8e1d0eacf651ae4140')
+    User.findById('65a530862d0f5b7b106cbf3c')
     .then(user=>{
-        req.user=new User(user.name,user.email,user.cart,user._id);
+        req.user=user;
         next();
     })
     .catch(err=>console.log(err));
@@ -33,8 +30,13 @@ app.use((req,res,next)=>{
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-//app.use(errorController.get404);
-
-mongoConnect(()=>{
+app.use(errorController.get404);
+const DB_URL=process.env.DB_URL;
+mongoose.connect(DB_URL)
+.then(result=>{
     app.listen(3000);
+    console.log('connected')
+})
+.catch(err=>{
+    console.log(err);
 })
