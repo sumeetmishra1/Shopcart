@@ -12,13 +12,13 @@ const router = express.Router();
 
   router.get('/products/:productId',shopController.getproduct);
 
-//  router.get('/cart', shopController.getCart);
+  router.get('/cart', shopController.getCart);
 
-//  router.post('/cart',shopController.postcart);
+  router.post('/cart',shopController.postcart);
  
 //  router.post('/create-order', shopController.postOrder);
 
-//  router.post('/cart-delete-item', shopController.postCartDeleteProduct);
+  router.post('/cart-delete-item', shopController.postCartDeleteProduct);
 
 //  router.get('/orders', shopController.getOrders);
 

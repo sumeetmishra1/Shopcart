@@ -1,6 +1,4 @@
 const Product = require('../models/product');
-//const cart =require('../models/cart');
-//const Cart = require('../models/cart');
 exports.getProducts = (req, res, next) => {
   Product.find().then(products=>{
     res.render('shop/product-list', {
@@ -34,8 +32,9 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  req.user.getCart()
-    .then(products=>{
+  req.user.populate('cart.items.productId')
+    .then(user=>{
+      const products=user.cart.items;
       res.render('shop/cart',{
         path:'/cart',
         pageTitle:'Your Cart',
@@ -67,13 +66,13 @@ exports.postCartDeleteProduct=(req,res,next)=>{
   req.user.deleteItemFromCart(productId)
   .then(result=>{
     res.redirect('/cart');
-  })
+  }).catch(err=>console.log(err));
 }
 exports.postOrder = (req,res,next)=>{
   req.user.addOrder()
   .then(result=>{
     res.redirect('/cart');
-  })
+  }).catch(err=>console.log(err));
 }
 exports.getOrders = (req, res, next) => {
   req.user
